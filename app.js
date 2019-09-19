@@ -4,6 +4,9 @@ Build all of your functions for displaying and gathering information below (GUI)
 */
 
 // this line is unnecessary
+/* CHANGE HERE**/
+
+const elephant = 100;
 
 // app is the function called to start the entire application
 function app(people) {
