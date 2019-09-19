@@ -49,7 +49,7 @@ function mainMenu(person, people) {
   switch (displayOption) {
     case "info":
       // TODO: get person's info
-      return findInfo(person, people);
+      return findInfo(person);
       break;
     case "family":
       // TODO: get person's family
@@ -70,44 +70,55 @@ function mainMenu(person, people) {
   }
 }
 
-function findInfo(person, people) {
+function findInfo(person) {
   let infoArr = Object.keys(person);
   let infoDisplayArr = [];
 
   for (let i = 0; i < infoArr.length; i++) {
-    let siftProp = infoArr[i];
-    let infoDisplay = infoArr[i] + ": " + person[siftProp];
-    infoDisplayArr.push(infoDisplay);
+    if (infoArr[i] === "firstName") {
+      infoDisplayArr.push("Name: " + person.firstName + " " + person.lastName);
+      i++;
+    } else {
+      let siftProp = infoArr[i];
+      if (person[siftProp] === null || person[siftProp].length === 0) {
+        i++;
+      } else {
+        let infoDisplay = infoArr[i] + ": " + person[siftProp];
+        infoDisplayArr.push(infoDisplay);
+      }
+    }
   }
   //AGE
   let age = generateAgeFromDOB(person.dob);
   person["age"] = age;
   infoDisplayArr.push(`age: ${person.age}`);
 
-  console.log(infoDisplayArr);
-  //NEEDS TO FINISH? OR BE FORMATTED TO DIFFERNT PROMPT
+  return alert(infoDisplayArr.join(", "));
 }
 
-function findDescendants(person, people) {
-  //recursive
-  //debugger;
-  //filter through all parents for id of person
+function findDescendants(person, people, nextChildren) {
+  let childFound = false;
   let parentId = person.id;
-
   let foundChildren = [];
-
   people.forEach(function(el) {
     if (el.parents[0] === parentId || el.parents[1] === parentId) {
       foundChildren.push(el);
+      childFound = true;
     }
   });
 
-  if (foundChildren.length === 0) {
+  if (childFound === false) {
+    return false;
   } else {
+    let ChildrenOfChildren = [];
     for (let i = 0; i < foundChildren.length; i++) {
       let nextChild = findDescendants(foundChildren[i], people);
-      foundChildren.concat(nextChild);
+      if (nextChild === false) {
+      } else {
+        ChildrenOfChildren.concat(nextChild);
+      }
     }
+    foundChildren.concat(ChildrenOfChildren);
   }
   return foundChildren;
 }
