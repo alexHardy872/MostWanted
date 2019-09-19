@@ -129,6 +129,19 @@ function displayPerson(person) {
   alert(personInfo);
 }
 
+function generateAgeFromDOB(dob) {
+  let today = new Date();
+  let birthDate = new Date(dob);
+  console.log(birthDate);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let month = today.getMonth() - birthDate.getMonth();
+  if( month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
+
+  return age;
+}
+
 // function that prompts and validates user input
 function promptFor(question, valid) {
   let response;
