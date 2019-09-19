@@ -3,6 +3,8 @@
 Build all of your functions for displaying and gathering information below (GUI). okmokmokmo
 */
 
+// this line is unnecessary
+
 // app is the function called to start the entire application
 function app(people) {
   let searchType = promptFor(
