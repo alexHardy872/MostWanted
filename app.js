@@ -8,7 +8,6 @@ Build all of your functions for displaying and gathering information below (GUI)
 
 // app is the function called to start the entire application
 function app(people) {
-  debugger;
   let searchType = promptFor(
     "Do you know the name of the person you are looking for? Enter 'yes' or 'no'",
     yesNo
@@ -50,12 +49,14 @@ function mainMenu(person, people) {
   switch (displayOption) {
     case "info":
       // TODO: get person's info
+      return findInfo(person, people);
       break;
     case "family":
       // TODO: get person's family
       break;
     case "descendants":
       // TODO: get person's descendants
+      return findDescendants(person, people, null);
       break;
     case "restart":
       app(people); // restart
@@ -65,6 +66,47 @@ function mainMenu(person, people) {
     default:
       return mainMenu(person, people); // ask again
   }
+}
+
+function findInfo(person, people) {
+  console.log(person);
+  let infoArr = Object.keys(person);
+  let infoDisplayArr = [];
+
+  for (let i = 0; i < infoArr.length; i++) {
+    let siftProp = infoArr[i];
+    let infoDisplay = infoArr[i] + ": " + person[siftProp];
+    infoDisplayArr.push(infoDisplay);
+  }
+  console.log(infoDisplayArr);
+  //NEEDS TO FINISH? OR BE FORMATTED TO DIFFERNT PROMPT
+}
+
+function findDescendants(person, people, foundChildren) {
+  //recursive
+  debugger;
+  //filter through all parents for id of person
+  let parentId = person.id;
+
+  let descendants = [];
+  let childOf = people.filter(function(el) {
+    if (el.parents[0] === parentId || el.parents[1] === parentId) {
+      descendants.push(el);
+    } else {
+      return false;
+    }
+  });
+
+  if (descendants.length === 0) {
+    console.log("no children");
+    return false;
+  } else {
+    for (let i = 0; i < descendants.length; i++) {
+      let nextChild = findDescendants(descendants[i], people, foundChildren);
+      descendants.push(nextChild);
+    }
+  }
+  return descendants;
 }
 
 function searchByName(people) {
