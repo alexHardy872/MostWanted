@@ -8,6 +8,14 @@ Build all of your functions for displaying and gathering information below (GUI)
 
 const elephant = 100;
 
+/* 
+
+The elephants eat ants.
+
+*/
+
+const elephant = 10000;
+
 // app is the function called to start the entire application
 function app(people) {
   debugger;
