@@ -155,8 +155,12 @@ function findImmediateFamily(person, people) {
 }
 
 function searchByName(people) {
-  let firstName = promptFor("What is the person's first name?", chars);
-  let lastName = promptFor("What is the person's last name?", chars);
+  let firstName = capitalizeFirstLetter(
+    promptFor("What is the person's first name?", chars)
+  );
+  let lastName = capitalizeFirstLetter(
+    promptFor("What is the person's last name?", chars)
+  );
 
   let foundPerson = people.filter(function(person) {
     if (person.firstName === firstName && person.lastName === lastName) {
@@ -219,4 +223,11 @@ function yesNo(input) {
 // helper function to pass in as default promptFor validation
 function chars(input) {
   return true; // default validation only
+}
+
+function capitalizeFirstLetter(string) {
+  let letters = string.split("");
+  letters[0] = letters[0].toUpperCase();
+  let newWord = letters.join("");
+  return newWord;
 }
