@@ -40,10 +40,10 @@ function mainMenu(person, people) {
 
   let displayOption = prompt(
     "Found " +
-      person.firstName +
-      " " +
-      person.lastName +
-      " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'"
+    person.firstName +
+    " " +
+    person.lastName +
+    " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'"
   );
 
   switch (displayOption) {
@@ -53,6 +53,8 @@ function mainMenu(person, people) {
       break;
     case "family":
       // TODO: get person's family
+      let family = findImmediateFamily(person, people);
+      console.log(family);
       break;
     case "descendants":
       // TODO: get person's descendants
@@ -67,6 +69,7 @@ function mainMenu(person, people) {
       return mainMenu(person, people); // ask again
   }
 }
+
 
 function findInfo(person, people) {
   console.log(person);
@@ -105,13 +108,38 @@ function findDescendants(person, people) {
   }
   debugger;
   return foundChildren;
+
+function findImmediateFamily(person, people) {
+  let siblings = []
+
+  let parents = people
+    .filter(potentialParent => person.parents.indexOf(potentialParent.id) !== -1)
+    .map(parent => Object.assign({}, parent, { relation: "parent" }));
+  people
+    .forEach(potentialSibling => {
+      for (let sp = 0; sp < potentialSibling.parents.length; sp += 1) {
+        for (let p = 0; p < parents.length; p += 1) {
+          if (parents[p].id === potentialSibling.parents[sp] && potentialSibling.id !== person.id) {
+            let sibling = Object.assign({}, potentialSibling, { relation: "sibling" });
+              siblings.push(sibling);
+          }
+        }
+      }
+    });
+
+  let spouse = people
+    .filter(potentialSpouse => potentialSpouse.id === person.currentSpouse)
+    .map(spouse => Object.assign({}, spouse, { relation: "spouse" }));
+
+  return [].concat(parents, siblings, spouse);
+
 }
 
 function searchByName(people) {
   let firstName = promptFor("What is the person's first name?", chars);
   let lastName = promptFor("What is the person's last name?", chars);
 
-  let foundPerson = people.filter(function(person) {
+  let foundPerson = people.filter(function (person) {
     if (person.firstName === firstName && person.lastName === lastName) {
       return true;
     } else {
@@ -126,7 +154,7 @@ function searchByName(people) {
 function displayPeople(people) {
   alert(
     people
-      .map(function(person) {
+      .map(function (person) {
         return person.firstName + " " + person.lastName;
       })
       .join("\n")
