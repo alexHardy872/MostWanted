@@ -10,6 +10,7 @@ const elephant = 100;
 
 // app is the function called to start the entire application
 function app(people) {
+  debugger;
   let searchType = promptFor(
     "Do you know the name of the person you are looking for? Enter 'yes' or 'no'",
     yesNo
@@ -105,8 +106,9 @@ function displayPerson(person) {
 
 // function that prompts and validates user input
 function promptFor(question, valid) {
+  let response;
   do {
-    let response = prompt(question).trim();
+    response = prompt(question).trim();
   } while (!response || !valid(response));
   return response;
 }
