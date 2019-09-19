@@ -19,6 +19,7 @@ function app(people) {
       break;
     case "no":
       // TODO: search by traits
+      searchResults = searchByTraits(people);
       break;
     default:
       app(people); // restart app
@@ -91,9 +92,9 @@ function findInfo(person) {
   //AGE
   let age = generateAgeFromDOB(person.dob);
   person["age"] = age;
-  infoDisplayArr.push(`age: ${person.age}`);
+  infoDisplayArr.push(`age: ${person.age} `);
 
-  return alert(infoDisplayArr.join(", "));
+  return alert(infoDisplayArr.join("\n"));
 }
 
 function findDescendants(person, people, nextChildren) {
@@ -171,6 +172,44 @@ function searchByName(people) {
   });
   // TODO: find the person using the name they entered
   return foundPerson[0];
+}
+
+function searchByTraits(people) {
+  let displayOption = promptFor(
+    "Please select a criteria to search \n Type 'id number', 'first name', 'last name', 'gender', 'dob', 'height', 'weight', 'eye color', 'occupation', 'parents', or 'current spouse'",
+    chars
+  );
+
+  switch (displayOption) {
+    case "id number":
+      break;
+    case "first name":
+      break;
+    case "last name":
+      break;
+    case "gender":
+      break;
+    case "dob": //switch with age maybe
+      break;
+    case "height":
+      break;
+    case "weight":
+      break;
+    case "eye color":
+      break;
+    case "occupation":
+      break;
+    case "parents":
+      break;
+    case "current spouse":
+      break;
+    case "restart":
+      break;
+    case "quit":
+      return; // stop execution
+    default:
+      return searchByTraits(people); // ask again
+  }
 }
 
 // alerts a list of people
