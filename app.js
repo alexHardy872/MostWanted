@@ -40,10 +40,10 @@ function mainMenu(person, people) {
 
   let displayOption = prompt(
     "Found " +
-    person.firstName +
-    " " +
-    person.lastName +
-    " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'"
+      person.firstName +
+      " " +
+      person.lastName +
+      " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'"
   );
 
   switch (displayOption) {
@@ -70,9 +70,7 @@ function mainMenu(person, people) {
   }
 }
 
-
 function findInfo(person, people) {
-  console.log(person);
   let infoArr = Object.keys(person);
   let infoDisplayArr = [];
 
@@ -81,6 +79,11 @@ function findInfo(person, people) {
     let infoDisplay = infoArr[i] + ": " + person[siftProp];
     infoDisplayArr.push(infoDisplay);
   }
+  //AGE
+  let age = generateAgeFromDOB(person.dob);
+  person["age"] = age;
+  infoDisplayArr.push(`age: ${person.age}`);
+
   console.log(infoDisplayArr);
   //NEEDS TO FINISH? OR BE FORMATTED TO DIFFERNT PROMPT
 }
@@ -106,40 +109,45 @@ function findDescendants(person, people) {
       foundChildren.concat(nextChild);
     }
   }
-  debugger;
   return foundChildren;
+}
 
 function findImmediateFamily(person, people) {
-  let siblings = []
+  let siblings = [];
 
   let parents = people
-    .filter(potentialParent => person.parents.indexOf(potentialParent.id) !== -1)
+    .filter(
+      potentialParent => person.parents.indexOf(potentialParent.id) !== -1
+    )
     .map(parent => Object.assign({}, parent, { relation: "parent" }));
-  people
-    .forEach(potentialSibling => {
-      for (let sp = 0; sp < potentialSibling.parents.length; sp += 1) {
-        for (let p = 0; p < parents.length; p += 1) {
-          if (parents[p].id === potentialSibling.parents[sp] && potentialSibling.id !== person.id) {
-            let sibling = Object.assign({}, potentialSibling, { relation: "sibling" });
-              siblings.push(sibling);
-          }
+  people.forEach(potentialSibling => {
+    for (let sp = 0; sp < potentialSibling.parents.length; sp += 1) {
+      for (let p = 0; p < parents.length; p += 1) {
+        if (
+          parents[p].id === potentialSibling.parents[sp] &&
+          potentialSibling.id !== person.id
+        ) {
+          let sibling = Object.assign({}, potentialSibling, {
+            relation: "sibling"
+          });
+          siblings.push(sibling);
         }
       }
-    });
+    }
+  });
 
   let spouse = people
     .filter(potentialSpouse => potentialSpouse.id === person.currentSpouse)
     .map(spouse => Object.assign({}, spouse, { relation: "spouse" }));
 
   return [].concat(parents, siblings, spouse);
-
 }
 
 function searchByName(people) {
   let firstName = promptFor("What is the person's first name?", chars);
   let lastName = promptFor("What is the person's last name?", chars);
 
-  let foundPerson = people.filter(function (person) {
+  let foundPerson = people.filter(function(person) {
     if (person.firstName === firstName && person.lastName === lastName) {
       return true;
     } else {
@@ -154,7 +162,7 @@ function searchByName(people) {
 function displayPeople(people) {
   alert(
     people
-      .map(function (person) {
+      .map(function(person) {
         return person.firstName + " " + person.lastName;
       })
       .join("\n")
@@ -176,7 +184,7 @@ function generateAgeFromDOB(dob) {
   console.log(birthDate);
   let age = today.getFullYear() - birthDate.getFullYear();
   let month = today.getMonth() - birthDate.getMonth();
-  if( month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+  if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
     age -= 1;
   }
 
