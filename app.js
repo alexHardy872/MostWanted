@@ -82,31 +82,29 @@ function findInfo(person, people) {
   //NEEDS TO FINISH? OR BE FORMATTED TO DIFFERNT PROMPT
 }
 
-function findDescendants(person, people, foundChildren) {
+function findDescendants(person, people) {
   //recursive
-  debugger;
+  //debugger;
   //filter through all parents for id of person
   let parentId = person.id;
 
-  let descendants = [];
-  let childOf = people.filter(function(el) {
+  let foundChildren = [];
+
+  people.forEach(function(el) {
     if (el.parents[0] === parentId || el.parents[1] === parentId) {
-      descendants.push(el);
-    } else {
-      return false;
+      foundChildren.push(el);
     }
   });
 
-  if (descendants.length === 0) {
-    console.log("no children");
-    return false;
+  if (foundChildren.length === 0) {
   } else {
-    for (let i = 0; i < descendants.length; i++) {
-      let nextChild = findDescendants(descendants[i], people, foundChildren);
-      descendants.push(nextChild);
+    for (let i = 0; i < foundChildren.length; i++) {
+      let nextChild = findDescendants(foundChildren[i], people);
+      foundChildren.concat(nextChild);
     }
   }
-  return descendants;
+  debugger;
+  return foundChildren;
 }
 
 function searchByName(people) {
