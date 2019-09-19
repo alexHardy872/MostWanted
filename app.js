@@ -6,16 +6,6 @@ Build all of your functions for displaying and gathering information below (GUI)
 // this line is unnecessary
 /* CHANGE HERE**/
 
-const elephant = 100;
-
-/* 
-
-The elephants eat ants.
-
-*/
-
-const elephant = 10000;
-
 // app is the function called to start the entire application
 function app(people) {
   debugger;
@@ -89,7 +79,7 @@ function searchByName(people) {
     }
   });
   // TODO: find the person using the name they entered
-  return foundPerson;
+  return foundPerson[0];
 }
 
 // alerts a list of people
