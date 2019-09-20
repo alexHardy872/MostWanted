@@ -163,7 +163,10 @@ function searchByName(people) {
 
 function searchByTraits(people) {
   let displayOption = promptFor(
-    "Please select a criteria to search \n Type 'id number', 'first name', 'last name', 'gender', 'dob', 'height', 'weight', 'eye color', 'occupation', 'parents', or 'current spouse'",
+    `Please select a criteria to search \n Type 'id number', 'first name', 'last name', 
+    'gender', 'dob', 'height', 'weight', 'eye color', or 'occupation' \n \n 
+    If you know the name of the person you want to search type 'restart'`,
+
     chars
   );
   let searchKey;
@@ -221,17 +224,7 @@ function searchByTraits(people) {
       );
       findTrait("occupation", searchKey, people);
       break;
-    case "parents":
-      searchKey = promptFor("Enter the parents you want to search for", chars);
-      findTrait("parents", searchKey, people);
-      break;
-    case "current spouse" || "currentSpouse":
-      searchKey = promptFor(
-        "Enter the current Spouse of whom you want to search for",
-        chars
-      );
-      findTrait("currentSpouse", searchKey, people);
-      break;
+
     case "restart":
       break;
     case "quit":
@@ -242,8 +235,6 @@ function searchByTraits(people) {
 }
 
 function findTrait(key, value, people) {
-  debugger;
-
   let names = [];
   let newPeople = people.filter(person => person[key] === value);
 
@@ -253,19 +244,10 @@ function findTrait(key, value, people) {
       chars
     );
     searchByTraits(people);
-    //findTrait(key, value, people)l
   }
 
-  newPeople.forEach(function(person) {
-    names.push(person.firstName + " " + person.lastName);
-  });
-
-  return alert(names.join("\n"));
-  // person[key] = value
-
-  // PROMPTES FOR TRAIT
-
-  // reurn new array
+  displayPeople(newPeople);
+  searchByTraits(newPeople);
 }
 
 // alerts a list of people
