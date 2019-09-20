@@ -181,27 +181,38 @@ function searchByTraits(people) {
   );
 
   switch (displayOption) {
-    case "id number":
+    case "id number" || "id":
+      findTrait("id", people);
       break;
-    case "first name":
+    case "first name" || "firstName":
+      findTrait("firstName", people);
       break;
-    case "last name":
+    case "last name" || "lastName":
+      findTrait("lastName", people);
       break;
     case "gender":
+      findTrait("gender", people);
       break;
-    case "dob": //switch with age maybe
+    case "dob" || "birthday" || "age": //switch with age maybe
+      findTrait("dob", people);
       break;
     case "height":
+      findTrait("hieght", people);
       break;
     case "weight":
+      findTrait("weight", people);
       break;
-    case "eye color":
+    case "eye color" || "eyeColor":
+      findTrait("eyeColor", people);
       break;
     case "occupation":
+      findTrait("occupation", people);
       break;
     case "parents":
+      findTrait("parents", people);
       break;
-    case "current spouse":
+    case "current spouse" || "currentSpouse":
+      findTrait("currentSpouse", people);
       break;
     case "restart":
       break;
@@ -212,6 +223,8 @@ function searchByTraits(people) {
   }
 }
 
+function findTrait(trait, people) {}
+
 // alerts a list of people
 function displayPeople(people) {
   alert(
@@ -221,15 +234,6 @@ function displayPeople(people) {
       })
       .join("\n")
   );
-}
-
-function displayPerson(person) {
-  // print all of the information about a person:
-  // height, weight, age, name, occupation, eye color.
-  let personInfo = "First Name: " + person.firstName + "\n";
-  personInfo += "Last Name: " + person.lastName + "\n";
-  // TODO: finish getting the rest of the information to display
-  alert(personInfo);
 }
 
 function generateAgeFromDOB(dob) {
