@@ -108,23 +108,28 @@ function findDescendants(searchPerson, people) {
 
 function findImmediateFamily(person, people) {
   let siblings = [];
+  let addedAlready = false;
 
   let parents = people
     .filter(
       potentialParent => person.parents.indexOf(potentialParent.id) !== -1
     )
     .map(parent => Object.assign({}, parent, { relation: "parent" }));
+
   people.forEach(potentialSibling => {
     for (let sp = 0; sp < potentialSibling.parents.length; sp += 1) {
+      addedAlready = false;
       for (let p = 0; p < parents.length; p += 1) {
         if (
           parents[p].id === potentialSibling.parents[sp] &&
-          potentialSibling.id !== person.id
+          potentialSibling.id !== person.id &&
+          addedAlready === false
         ) {
           let sibling = Object.assign({}, potentialSibling, {
             relation: "sibling"
           });
           siblings.push(sibling);
+          addedAlready = true;
         }
       }
     }
