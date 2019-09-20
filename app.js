@@ -98,6 +98,9 @@ function findInfo(person) {
 }
 
 function findDescendants(person, people, nextChildren) {
+  //age
+  debugger;
+
   let childFound = false;
   let parentId = person.id;
   let foundChildren = [];
@@ -179,40 +182,71 @@ function searchByTraits(people) {
     "Please select a criteria to search \n Type 'id number', 'first name', 'last name', 'gender', 'dob', 'height', 'weight', 'eye color', 'occupation', 'parents', or 'current spouse'",
     chars
   );
+  let searchKey;
 
   switch (displayOption) {
     case "id number" || "id":
       findTrait("id", people);
       break;
     case "first name" || "firstName":
-      findTrait("firstName", people);
+      searchKey = promptFor(
+        "Enter the first name you want to search for",
+        chars
+      );
+      searchKey = capitalizeFirstLetter(searchKey);
+      findTrait("firstName", searchKey, people);
       break;
     case "last name" || "lastName":
-      findTrait("lastName", people);
+      searchKey = promptFor(
+        "Enter the last name you want to search for",
+        chars
+      );
+      searchKey = capitalizeFirstLetter(searchKey);
+      findTrait("lastName", searchKey, people);
       break;
     case "gender":
-      findTrait("gender", people);
+      searchKey = promptFor("Enter the gender you want to search for", chars);
+      findTrait("gender", searchKey, people);
       break;
     case "dob" || "birthday" || "age": //switch with age maybe
-      findTrait("dob", people);
+      searchKey = promptFor(
+        "Enter the date of birth you want to search for",
+        chars
+      );
+      findTrait("dob", searchKey, people);
       break;
     case "height":
-      findTrait("hieght", people);
+      searchKey = promptFor("Enter the height you want to search for", chars);
+      findTrait("height", searchKey, people);
       break;
     case "weight":
-      findTrait("weight", people);
+      searchKey = promptFor("Enter the weight you want to search for", chars);
+      findTrait("weight", searchKey, people);
       break;
     case "eye color" || "eyeColor":
-      findTrait("eyeColor", people);
+      searchKey = promptFor(
+        "Enter the eye color you want to search for",
+        chars
+      );
+      findTrait("eyeColor", searchKey, people);
       break;
     case "occupation":
-      findTrait("occupation", people);
+      searchKey = promptFor(
+        "Enter the occupation you want to search for",
+        chars
+      );
+      findTrait("occupation", searchKey, people);
       break;
     case "parents":
-      findTrait("parents", people);
+      searchKey = promptFor("Enter the parents you want to search for", chars);
+      findTrait("parents", searchKey, people);
       break;
     case "current spouse" || "currentSpouse":
-      findTrait("currentSpouse", people);
+      searchKey = promptFor(
+        "Enter the current Spouse of whom you want to search for",
+        chars
+      );
+      findTrait("currentSpouse", searchKey, people);
       break;
     case "restart":
       break;
@@ -223,7 +257,32 @@ function searchByTraits(people) {
   }
 }
 
-function findTrait(trait, people) {}
+function findTrait(key, value, people) {
+  debugger;
+
+  let names = [];
+  let newPeople = people.filter(person => person[key] === value);
+
+  if (newPeople.length === 0) {
+    alert(
+      `No one in our data base has a ${key} value of ${value} Please search another criteria`,
+      chars
+    );
+    searchByTraits(people);
+    //findTrait(key, value, people)l
+  }
+
+  newPeople.forEach(function(person) {
+    names.push(person.firstName + " " + person.lastName);
+  });
+
+  return alert(names.join("\n"));
+  // person[key] = value
+
+  // PROMPTES FOR TRAIT
+
+  // reurn new array
+}
 
 // alerts a list of people
 function displayPeople(people) {
@@ -239,7 +298,6 @@ function displayPeople(people) {
 function generateAgeFromDOB(dob) {
   let today = new Date();
   let birthDate = new Date(dob);
-  console.log(birthDate);
   let age = today.getFullYear() - birthDate.getFullYear();
   let month = today.getMonth() - birthDate.getMonth();
   if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
