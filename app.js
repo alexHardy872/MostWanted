@@ -50,7 +50,7 @@ function mainMenu(person, people) {
   switch (displayOption) {
     case "info":
       // TODO: get person's info
-      return findInfo(person);
+      return findInfo(person, people);
       break;
     case "family":
       // TODO: get person's family
@@ -59,7 +59,7 @@ function mainMenu(person, people) {
       break;
     case "descendants":
       // TODO: get person's descendants
-      return findDescendants(person, people, null);
+      return displayPeople(findDescendants(person, people));
       break;
     case "restart":
       app(people); // restart
@@ -71,7 +71,7 @@ function mainMenu(person, people) {
   }
 }
 
-function findInfo(person) {
+function findInfo(person, people) {
   let infoArr = Object.keys(person);
   let infoDisplayArr = [];
 
@@ -79,10 +79,28 @@ function findInfo(person) {
     if (infoArr[i] === "firstName") {
       infoDisplayArr.push("Name: " + person.firstName + " " + person.lastName);
       i++;
+    } else if (infoArr[i] === "currentSpouse") {
+      //SPOUSE
+
+      let spouseName = getCurrentSpouseById(person, people);
+      infoDisplayArr.push("Spouse: " + spouseName);
+    } else if (
+      infoArr[i] === "parents" &&
+      (person.parents !== null || person.parents.length !== 0)
+    ) {
+      //PARENT NAMES
+
+      let parents = getParentsById(person, people);
+      let parentsNames = [];
+      console.log(parents);
+      debugger;
+      for (let p = 0; p < parents.length; p++) {
+        parentsNames.push(parents[p].firstName + " " + parents[p].lastName);
+      }
+      infoDisplayArr.push("Parents: " + parentsNames.join(" & "));
     } else {
       let siftProp = infoArr[i];
       if (person[siftProp] === null || person[siftProp].length === 0) {
-        i++;
       } else {
         let infoDisplay = infoArr[i] + ": " + person[siftProp];
         infoDisplayArr.push(infoDisplay);
@@ -97,8 +115,26 @@ function findInfo(person) {
   return alert(infoDisplayArr.join("\n"));
 }
 
+function getCurrentSpouseById(person, people) {
+  let spouseId = person.currentSpouse;
+
+  let currentSpouse = people.filter(
+    potentialSpouse => potentialSpouse.id === spouseId
+  );
+
+  return currentSpouse[0].firstName + " " + currentSpouse[0].lastName;
+}
+
+function getParentsById(person, people) {
+  return people
+    .filter(
+      potentialParent => person.parents.indexOf(potentialParent.id) !== -1
+    )
+    .map(parent => Object.assign({}, parent, { relation: "parent" }));
+}
+
 function findDescendants(searchPerson, people) {
-  return (foundChildren = people
+  return people
     .map(person => {
       if (
         person.parents[0] === searchPerson.id ||
@@ -108,7 +144,7 @@ function findDescendants(searchPerson, people) {
       }
     })
     .filter(person => person !== undefined)
-    .flat());
+    .flat();
 }
 
 function findImmediateFamily(person, people) {
@@ -163,9 +199,7 @@ function searchByName(people) {
 
 function searchByTraits(people) {
   let displayOption = promptFor(
-    `Please select a criteria to search \n Type 'id number', 'first name', 'last name', 
-    'gender', 'dob', 'height', 'weight', 'eye color', or 'occupation' \n \n 
-    If you know the name of the person you want to search type 'restart'`,
+    `Please select a criteria to search \nType id number, first name, last name,\ngender, dob, height, weight, eye color, or occupation.\n\nIf you know the name of the person you want to search type restart`,
 
     chars
   );
@@ -226,10 +260,14 @@ function searchByTraits(people) {
       break;
 
     case "restart":
+      app(people);
       break;
     case "quit":
       return; // stop execution
     default:
+      alert(
+        `The trait you entered ${displayOption} does not match any criteria in our database`
+      );
       return searchByTraits(people); // ask again
   }
 }
