@@ -158,8 +158,8 @@ function findImmediateFamily(person, people) {
     .map(parent => Object.assign({}, parent, { relation: "parent" }));
 
   people.forEach(potentialSibling => {
+    addedAlready = false;
     for (let sp = 0; sp < potentialSibling.parents.length; sp += 1) {
-      addedAlready = false;
       for (let p = 0; p < parents.length; p += 1) {
         if (
           parents[p].id === potentialSibling.parents[sp] &&
@@ -203,11 +203,19 @@ function searchByName(people) {
 }
 
 function searchByTraits(people) {
-  let displayOption = promptFor(
-    `Please select a criteria to search \nType id number, first name, last name,\ngender, dob, height, weight, eye color, or occupation.\n\nIf you know the name of the person you want to search type restart`,
+  let displayOption;
+  if (people.length < 22) {
+    displayOption = promptFor(
+      `Please select another criteria to refine your search \nType id number, first name, last name,\ngender, dob, height, weight, eye color, or occupation.\n\nIf you know the name of the person you want to search type restart`,
+      chars
+    );
+  } else {
+    displayOption = promptFor(
+      `Please select a criteria to search \nType id number, first name, last name,\ngender, dob, height, weight, eye color, or occupation.\n\nIf you know the name of the person you want to search type restart`,
 
-    chars
-  );
+      chars
+    );
+  }
   let searchKey;
 
   switch (displayOption) {
@@ -286,6 +294,7 @@ function findTrait(key, value, people) {
       `No one in our data base has a ${key} value of ${value} Please search another criteria`,
       chars
     );
+    //alert("Refine your search further by adding another filter to your search");
     searchByTraits(people);
   }
 
