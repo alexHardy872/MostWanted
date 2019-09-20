@@ -97,31 +97,13 @@ function findInfo(person) {
   return alert(infoDisplayArr.join("\n"));
 }
 
-function findDescendants(person, people, nextChildren) {
-  let childFound = false;
-  let parentId = person.id;
-  let foundChildren = [];
-  people.forEach(function(el) {
-    if (el.parents[0] === parentId || el.parents[1] === parentId) {
-      foundChildren.push(el);
-      childFound = true;
-    }
-  });
+function findDescendants(searchPerson, people) {
+  return foundChildren = people.map(person => {
+      if (person.parents[0] === searchPerson.id || person.parents[1] === searchPerson.id) {
+          return [].concat(findDescendants(person, people), person);
+        }        
+  }).filter(person => person !== undefined).flat();
 
-  if (childFound === false) {
-    return false;
-  } else {
-    let ChildrenOfChildren = [];
-    for (let i = 0; i < foundChildren.length; i++) {
-      let nextChild = findDescendants(foundChildren[i], people);
-      if (nextChild === false) {
-      } else {
-        ChildrenOfChildren.concat(nextChild);
-      }
-    }
-    foundChildren.concat(ChildrenOfChildren);
-  }
-  return foundChildren;
 }
 
 function findImmediateFamily(person, people) {
