@@ -50,7 +50,7 @@ function mainMenu(person, people) {
   switch (displayOption) {
     case "info":
       // TODO: get person's info
-      return findInfo(person);
+      return findInfo(person, people);
       break;
     case "family":
       // TODO: get person's family
@@ -59,7 +59,7 @@ function mainMenu(person, people) {
       break;
     case "descendants":
       // TODO: get person's descendants
-      return findDescendants(person, people, null);
+      return displayPeople(findDescendants(person, people));
       break;
     case "restart":
       app(people); // restart
@@ -71,7 +71,7 @@ function mainMenu(person, people) {
   }
 }
 
-function findInfo(person) {
+function findInfo(person, people) {
   let infoArr = Object.keys(person);
   let infoDisplayArr = [];
 
@@ -79,10 +79,28 @@ function findInfo(person) {
     if (infoArr[i] === "firstName") {
       infoDisplayArr.push("Name: " + person.firstName + " " + person.lastName);
       i++;
+    } else if (infoArr[i] === "currentSpouse") {
+      //SPOUSE
+
+      let spouseName = getCurrentSpouseById(person, people);
+      infoDisplayArr.push("Spouse: " + spouseName);
+    } else if (
+      infoArr[i] === "parents" &&
+      (person.parents !== null || person.parents.length !== 0)
+    ) {
+      //PARENT NAMES
+
+      let parents = getParentsById(person, people);
+      let parentsNames = [];
+      console.log(parents);
+      debugger;
+      for (let p = 0; p < parents.length; p++) {
+        parentsNames.push(parents[p].firstName + " " + parents[p].lastName);
+      }
+      infoDisplayArr.push("Parents: " + parentsNames.join(" & "));
     } else {
       let siftProp = infoArr[i];
       if (person[siftProp] === null || person[siftProp].length === 0) {
-        i++;
       } else {
         let infoDisplay = infoArr[i] + ": " + person[siftProp];
         infoDisplayArr.push(infoDisplay);
@@ -97,13 +115,36 @@ function findInfo(person) {
   return alert(infoDisplayArr.join("\n"));
 }
 
-function findDescendants(searchPerson, people) {
-  return foundChildren = people.map(person => {
-      if (person.parents[0] === searchPerson.id || person.parents[1] === searchPerson.id) {
-          return [].concat(findDescendants(person, people), person);
-        }        
-  }).filter(person => person !== undefined).flat();
+function getCurrentSpouseById(person, people) {
+  let spouseId = person.currentSpouse;
 
+  let currentSpouse = people.filter(
+    potentialSpouse => potentialSpouse.id === spouseId
+  );
+
+  return currentSpouse[0].firstName + " " + currentSpouse[0].lastName;
+}
+
+function getParentsById(person, people) {
+  return people
+    .filter(
+      potentialParent => person.parents.indexOf(potentialParent.id) !== -1
+    )
+    .map(parent => Object.assign({}, parent, { relation: "parent" }));
+}
+
+function findDescendants(searchPerson, people) {
+  return people
+    .map(person => {
+      if (
+        person.parents[0] === searchPerson.id ||
+        person.parents[1] === searchPerson.id
+      ) {
+        return [].concat(findDescendants(person, people), person);
+      }
+    })
+    .filter(person => person !== undefined)
+    .flat();
 }
 
 function findImmediateFamily(person, people) {
@@ -163,54 +204,94 @@ function searchByName(people) {
 
 function searchByTraits(people) {
   let displayOption = promptFor(
-    "Please select a criteria to search \n Type 'id number', 'first name', 'last name', 'gender', 'dob', 'height', 'weight', 'eye color', 'occupation', 'parents', or 'current spouse'",
+    `Please select a criteria to search \nType id number, first name, last name,\ngender, dob, height, weight, eye color, or occupation.\n\nIf you know the name of the person you want to search type restart`,
+
     chars
   );
+  let searchKey;
 
   switch (displayOption) {
     case "id number" || "id":
       findTrait("id", people);
       break;
     case "first name" || "firstName":
-      findTrait("firstName", people);
+      searchKey = promptFor(
+        "Enter the first name you want to search for",
+        chars
+      );
+      searchKey = capitalizeFirstLetter(searchKey);
+      findTrait("firstName", searchKey, people);
       break;
     case "last name" || "lastName":
-      findTrait("lastName", people);
+      searchKey = promptFor(
+        "Enter the last name you want to search for",
+        chars
+      );
+      searchKey = capitalizeFirstLetter(searchKey);
+      findTrait("lastName", searchKey, people);
       break;
     case "gender":
-      findTrait("gender", people);
+      searchKey = promptFor("Enter the gender you want to search for", chars);
+      findTrait("gender", searchKey, people);
       break;
     case "dob" || "birthday" || "age": //switch with age maybe
-      findTrait("dob", people);
+      searchKey = promptFor(
+        "Enter the date of birth you want to search for",
+        chars
+      );
+      findTrait("dob", searchKey, people);
       break;
     case "height":
-      findTrait("hieght", people);
+      searchKey = promptFor("Enter the height you want to search for", chars);
+      findTrait("height", searchKey, people);
       break;
     case "weight":
-      findTrait("weight", people);
+      searchKey = promptFor("Enter the weight you want to search for", chars);
+      findTrait("weight", searchKey, people);
       break;
     case "eye color" || "eyeColor":
-      findTrait("eyeColor", people);
+      searchKey = promptFor(
+        "Enter the eye color you want to search for",
+        chars
+      );
+      findTrait("eyeColor", searchKey, people);
       break;
     case "occupation":
-      findTrait("occupation", people);
+      searchKey = promptFor(
+        "Enter the occupation you want to search for",
+        chars
+      );
+      findTrait("occupation", searchKey, people);
       break;
-    case "parents":
-      findTrait("parents", people);
-      break;
-    case "current spouse" || "currentSpouse":
-      findTrait("currentSpouse", people);
-      break;
+
     case "restart":
+      app(people);
       break;
     case "quit":
       return; // stop execution
     default:
+      alert(
+        `The trait you entered ${displayOption} does not match any criteria in our database`
+      );
       return searchByTraits(people); // ask again
   }
 }
 
-function findTrait(trait, people) {}
+function findTrait(key, value, people) {
+  let names = [];
+  let newPeople = people.filter(person => person[key] === value);
+
+  if (newPeople.length === 0) {
+    alert(
+      `No one in our data base has a ${key} value of ${value} Please search another criteria`,
+      chars
+    );
+    searchByTraits(people);
+  }
+
+  displayPeople(newPeople);
+  searchByTraits(newPeople);
+}
 
 // alerts a list of people
 function displayPeople(people) {
@@ -226,7 +307,6 @@ function displayPeople(people) {
 function generateAgeFromDOB(dob) {
   let today = new Date();
   let birthDate = new Date(dob);
-  console.log(birthDate);
   let age = today.getFullYear() - birthDate.getFullYear();
   let month = today.getMonth() - birthDate.getMonth();
   if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
