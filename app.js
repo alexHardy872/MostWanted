@@ -55,7 +55,7 @@ function mainMenu(person, people) {
     case "family":
       // TODO: get person's family
       let family = findImmediateFamily(person, people);
-      console.log(family);
+      displayPeople(family);
       break;
     case "descendants":
       // TODO: get person's descendants
@@ -67,6 +67,7 @@ function mainMenu(person, people) {
     case "quit":
       return; // stop execution
     default:
+      alert(displayOption + " is not a valid option, please try again");
       return mainMenu(person, people); // ask again
   }
 }
@@ -79,21 +80,20 @@ function findInfo(person, people) {
     if (infoArr[i] === "firstName") {
       infoDisplayArr.push("Name: " + person.firstName + " " + person.lastName);
       i++;
-    } else if (infoArr[i] === "currentSpouse") {
+    } else if (
+      infoArr[i] === "currentSpouse" &&
+      person.currentSpouse !== null
+    ) {
       //SPOUSE
 
       let spouseName = getCurrentSpouseById(person, people);
       infoDisplayArr.push("Spouse: " + spouseName);
-    } else if (
-      infoArr[i] === "parents" &&
-      (person.parents !== null || person.parents.length !== 0)
-    ) {
+    } else if (infoArr[i] === "parents" && person.parents.length !== 0) {
       //PARENT NAMES
 
       let parents = getParentsById(person, people);
       let parentsNames = [];
-      console.log(parents);
-      debugger;
+
       for (let p = 0; p < parents.length; p++) {
         parentsNames.push(parents[p].firstName + " " + parents[p].lastName);
       }
