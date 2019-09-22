@@ -56,8 +56,15 @@ function mainMenu(person, people) {
     case "family":
       // TODO: get person's family
       let family = findImmediateFamily(person, people);
-      displayPeople(family);
-      mainMenu(person, people);
+      if (family === false) {
+        alert("No immediate family (parents, siblings or spouse) found for " + person.firstName + " " + person.lastName + " \n Try searching for their 'descendants' to find children.");
+        mainMenu(person, people);
+
+      } else {
+
+        displayPeople(family);
+        mainMenu(person, people);
+      }
       break;
     case "descendants":
       // TODO: get person's descendants
@@ -189,7 +196,14 @@ function findImmediateFamily(person, people) {
     .filter(potentialSpouse => potentialSpouse.id === person.currentSpouse)
     .map(spouse => Object.assign({}, spouse, { relation: "spouse" }));
 
-  return [].concat(parents, siblings, spouse);
+  let familyTotal = [].concat(parents, siblings, spouse);
+
+  if (familyTotal.length === 0) {
+
+    return false;
+  } else {
+    return familyTotal;
+  }
 }
 
 function searchByName(people) {
