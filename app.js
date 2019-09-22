@@ -61,8 +61,9 @@ function mainMenu(person, people) {
         mainMenu(person, people);
 
       } else {
-
-        displayPeople(family);
+        // SHOW FAMILY AND REALTION?
+        displayRelation(family);
+        //displayPeople(family);
         mainMenu(person, people);
       }
       break;
@@ -246,6 +247,7 @@ function searchByTraitsMenue(people, AllPeople) {
     case "id":
       searchKey = parseInt(promptFor("Enter the ID number you want to search for", numsID));
       findTrait("id", searchKey, people, AllPeople);
+
       break;
     case "first name":
     case "firstName":
@@ -279,7 +281,7 @@ function searchByTraitsMenue(people, AllPeople) {
       findTrait("dob", searchKey, people, AllPeople);
       break;
     case "height":
-      debugger;
+
       searchKey = parseInt(promptFor("Enter the height you want to search for", nums));
       findTrait("height", searchKey, people, AllPeople);
       break;
@@ -325,9 +327,15 @@ function findTrait(key, value, people, AllPeople) {
       `No one in our data base has a ${key} value of ${value} Please search another criteria`
     );
     searchByTraitsMenue(people);
+  } else if (newPeople.length === 1) {
+    mainMenu(newPeople[0], AllPeople);
+
+  } else {
+
+    displayPeople(newPeople);
+    searchByTraitsMenue(newPeople, AllPeople);
   }
-  displayPeople(newPeople);
-  searchByTraitsMenue(newPeople, AllPeople);
+
 }
 
 // alerts a list of people
@@ -341,6 +349,16 @@ function displayPeople(people) {
   );
 }
 
+///
+function displayRelation(people) {
+  alert(
+    people
+      .map(function (person) {
+        return person.firstName + " " + person.lastName + ": " + person.relation;
+      })
+      .join("\n")
+  );
+}
 function generateAgeFromDOB(dob) {
   let today = new Date();
   let birthDate = new Date(dob);
