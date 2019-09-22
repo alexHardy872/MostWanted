@@ -41,25 +41,34 @@ function mainMenu(person, people) {
 
   let displayOption = prompt(
     "Found " +
-      person.firstName +
-      " " +
-      person.lastName +
-      " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'"
+    person.firstName +
+    " " +
+    person.lastName +
+    " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'"
   );
 
   switch (displayOption) {
     case "info":
       // TODO: get person's info
-      return findInfo(person, people);
+      findInfo(person, people);
+      mainMenu(person, people);
       break;
     case "family":
       // TODO: get person's family
       let family = findImmediateFamily(person, people);
       displayPeople(family);
+      mainMenu(person, people);
       break;
     case "descendants":
       // TODO: get person's descendants
-      return displayPeople(findDescendants(person, people));
+      let Descendants = findDescendants(person, people);
+      if (Descendants.length === 0) {
+        alert(person.firstName + " " + person.lastName + " has no known descendants ")
+        mainMenu(person, people);
+      } else {
+        displayPeople(Descendants);
+        mainMenu(person, people);
+      }
       break;
     case "restart":
       app(people); // restart
@@ -191,7 +200,7 @@ function searchByName(people) {
     promptFor("What is the person's last name?", chars)
   );
 
-  let foundPerson = people.filter(function(person) {
+  let foundPerson = people.filter(function (person) {
     if (person.firstName === firstName && person.lastName === lastName) {
       return true;
     } else {
@@ -219,10 +228,13 @@ function searchByTraits(people) {
   let searchKey;
 
   switch (displayOption) {
-    case "id number" || "id":
-      findTrait("id", people);
+    case "id number":
+    case "id":
+      searchKey = parseInt(promptFor("Enter the ID number you want to search for", numsID));
+      findTrait("id", searchKey, people);
       break;
-    case "first name" || "firstName":
+    case "first name":
+    case "firstName":
       searchKey = promptFor(
         "Enter the first name you want to search for",
         chars
@@ -230,7 +242,8 @@ function searchByTraits(people) {
       searchKey = capitalizeFirstLetter(searchKey);
       findTrait("firstName", searchKey, people);
       break;
-    case "last name" || "lastName":
+    case "last name":
+    case "lastName":
       searchKey = promptFor(
         "Enter the last name you want to search for",
         chars
@@ -242,7 +255,9 @@ function searchByTraits(people) {
       searchKey = promptFor("Enter the gender you want to search for", chars);
       findTrait("gender", searchKey, people);
       break;
-    case "dob" || "birthday" || "age": //switch with age maybe
+    case "dob":
+    case "birthday":
+    case "age": //switch with age maybe?
       searchKey = promptFor(
         "Enter the date of birth you want to search for",
         chars
@@ -250,14 +265,15 @@ function searchByTraits(people) {
       findTrait("dob", searchKey, people);
       break;
     case "height":
-      searchKey = promptFor("Enter the height you want to search for", chars);
+      searchKey = parseInt(promptFor("Enter the height you want to search for", nums));
       findTrait("height", searchKey, people);
       break;
     case "weight":
-      searchKey = promptFor("Enter the weight you want to search for", chars);
+      searchKey = parseInt(promptFor("Enter the weight you want to search for", nums));
       findTrait("weight", searchKey, people);
       break;
-    case "eye color" || "eyeColor":
+    case "eye color":
+    case "eyeColor":
       searchKey = promptFor(
         "Enter the eye color you want to search for",
         chars
@@ -285,8 +301,8 @@ function searchByTraits(people) {
   }
 }
 
+
 function findTrait(key, value, people) {
-  let names = [];
   let newPeople = people.filter(person => person[key] === value);
 
   if (newPeople.length === 0) {
@@ -294,10 +310,8 @@ function findTrait(key, value, people) {
       `No one in our data base has a ${key} value of ${value} Please search another criteria`,
       chars
     );
-    //alert("Refine your search further by adding another filter to your search");
     searchByTraits(people);
   }
-
   displayPeople(newPeople);
   searchByTraits(newPeople);
 }
@@ -306,7 +320,7 @@ function findTrait(key, value, people) {
 function displayPeople(people) {
   alert(
     people
-      .map(function(person) {
+      .map(function (person) {
         return person.firstName + " " + person.lastName;
       })
       .join("\n")
@@ -343,6 +357,33 @@ function yesNo(input) {
 function chars(input) {
   return true; // default validation only
 }
+
+// helper function to validate numbers
+function numsID(input) {
+  input = parseInt(input);
+  let isNum = Number.isInteger(input);
+  let numlength = input.toString().length;
+
+  if (isNum === false || numlength !== 9) {
+    return alert("not a valid number (valid IDs are 9 digits) ")
+  } else {
+    return true;
+  }
+}
+
+function nums(input) {
+  input = parseInt(input);
+  let isNum = Number.isInteger(input);
+  let numlength = input.toString().length;
+
+  if (isNum === false || numlength > 3) {
+    return alert("not a valid number for search")
+  } else {
+    return true;
+  }
+}
+
+
 
 function capitalizeFirstLetter(string) {
   let letters = string.split("");
