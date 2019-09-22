@@ -19,7 +19,7 @@ function app(people) {
       break;
     case "no":
       // TODO: search by traits
-      searchResults = searchByTraits(people);
+      searchResults = searchByTraitsMenue(people, people);
       break;
     default:
       app(people); // restart app
@@ -211,7 +211,7 @@ function searchByName(people) {
   return foundPerson[0];
 }
 
-function searchByTraits(people) {
+function searchByTraitsMenue(people, AllPeople) {
   let displayOption;
   if (people.length < 22) {
     displayOption = promptFor(
@@ -231,7 +231,7 @@ function searchByTraits(people) {
     case "id number":
     case "id":
       searchKey = parseInt(promptFor("Enter the ID number you want to search for", numsID));
-      findTrait("id", searchKey, people);
+      findTrait("id", searchKey, people, AllPeople);
       break;
     case "first name":
     case "firstName":
@@ -240,7 +240,7 @@ function searchByTraits(people) {
         chars
       );
       searchKey = capitalizeFirstLetter(searchKey);
-      findTrait("firstName", searchKey, people);
+      findTrait("firstName", searchKey, people, AllPeople);
       break;
     case "last name":
     case "lastName":
@@ -249,11 +249,11 @@ function searchByTraits(people) {
         chars
       );
       searchKey = capitalizeFirstLetter(searchKey);
-      findTrait("lastName", searchKey, people);
+      findTrait("lastName", searchKey, people, AllPeople);
       break;
     case "gender":
       searchKey = promptFor("Enter the gender you want to search for", chars);
-      findTrait("gender", searchKey, people);
+      findTrait("gender", searchKey, people, AllPeople);
       break;
     case "dob":
     case "birthday":
@@ -262,15 +262,16 @@ function searchByTraits(people) {
         "Enter the date of birth you want to search for",
         chars
       );
-      findTrait("dob", searchKey, people);
+      findTrait("dob", searchKey, people, AllPeople);
       break;
     case "height":
+      debugger;
       searchKey = parseInt(promptFor("Enter the height you want to search for", nums));
-      findTrait("height", searchKey, people);
+      findTrait("height", searchKey, people, AllPeople);
       break;
     case "weight":
       searchKey = parseInt(promptFor("Enter the weight you want to search for", nums));
-      findTrait("weight", searchKey, people);
+      findTrait("weight", searchKey, people, AllPeople);
       break;
     case "eye color":
     case "eyeColor":
@@ -278,18 +279,18 @@ function searchByTraits(people) {
         "Enter the eye color you want to search for",
         chars
       );
-      findTrait("eyeColor", searchKey, people);
+      findTrait("eyeColor", searchKey, people, AllPeople);
       break;
     case "occupation":
       searchKey = promptFor(
         "Enter the occupation you want to search for",
         chars
       );
-      findTrait("occupation", searchKey, people);
+      findTrait("occupation", searchKey, people, AllPeople);
       break;
 
     case "restart":
-      app(people);
+      app(AllPeople);
       break;
     case "quit":
       return; // stop execution
@@ -297,23 +298,22 @@ function searchByTraits(people) {
       alert(
         `The trait you entered ${displayOption} does not match any criteria in our database`
       );
-      return searchByTraits(people); // ask again
+      return searchByTraitsMenue(people, AllPeople); // ask again
   }
 }
 
 
-function findTrait(key, value, people) {
+function findTrait(key, value, people, AllPeople) {
   let newPeople = people.filter(person => person[key] === value);
 
   if (newPeople.length === 0) {
     alert(
-      `No one in our data base has a ${key} value of ${value} Please search another criteria`,
-      chars
+      `No one in our data base has a ${key} value of ${value} Please search another criteria`
     );
-    searchByTraits(people);
+    searchByTraitsMenue(people);
   }
   displayPeople(newPeople);
-  searchByTraits(newPeople);
+  searchByTraitsMenue(newPeople, AllPeople);
 }
 
 // alerts a list of people
