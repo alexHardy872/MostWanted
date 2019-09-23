@@ -19,7 +19,7 @@ function app(people) {
       break;
     case "no":
       // TODO: search by traits
-      searchResults = searchByTraitsMenue(people, people);
+      searchResults = searchByTraitsMenu(people, people);
       break;
     default:
       app(people); // restart app
@@ -226,7 +226,7 @@ function searchByName(people) {
   return foundPerson[0];
 }
 
-function searchByTraitsMenue(people, AllPeople) {
+function searchByTraitsMenu(people, AllPeople) {
   let displayOption;
   if (people.length < 22) {
     displayOption = promptFor(
@@ -314,7 +314,7 @@ function searchByTraitsMenue(people, AllPeople) {
       alert(
         `The trait you entered ${displayOption} does not match any criteria in our database`
       );
-      return searchByTraitsMenue(people, AllPeople); // ask again
+      return searchByTraitsMenu(people, AllPeople); // ask again
   }
 }
 
@@ -326,14 +326,14 @@ function findTrait(key, value, people, AllPeople) {
     alert(
       `No one in our data base has a ${key} value of ${value} Please search another criteria`
     );
-    searchByTraitsMenue(people);
+    searchByTraitsMenu(people);
   } else if (newPeople.length === 1) {
     mainMenu(newPeople[0], AllPeople);
 
   } else {
 
     displayPeople(newPeople);
-    searchByTraitsMenue(newPeople, AllPeople);
+    searchByTraitsMenu(newPeople, AllPeople);
   }
 
 }
